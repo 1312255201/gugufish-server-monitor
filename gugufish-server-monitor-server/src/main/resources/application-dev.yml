@@ -5,9 +5,9 @@ springdoc:
     operations-sorter: alpha
 spring:
   mail:
-    host: smtp.163.com
-    username: javastudy111@163.com
-    password: VKQFYZMUSUZGSGEG
+    host: smtp.qq.com
+    username: 114514@qq.com
+    password: qwq
   rabbitmq:
     addresses: localhost
     username: guest
