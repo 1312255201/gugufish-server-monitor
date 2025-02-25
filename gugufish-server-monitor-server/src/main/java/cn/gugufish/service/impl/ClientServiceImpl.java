@@ -1,12 +1,11 @@
 package cn.gugufish.service.impl;
 
 import cn.gugufish.entity.dto.ClientDetail;
-import cn.gugufish.entity.vo.request.ClientDetailVO;
-import cn.gugufish.entity.vo.request.ClientPreviewVO;
-import cn.gugufish.entity.vo.request.RuntimeDetailVO;
+import cn.gugufish.entity.vo.request.*;
 import cn.gugufish.mapper.ClientDetailMapper;
 import cn.gugufish.utils.InfluxDbUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.gugufish.entity.dto.Client;
 import cn.gugufish.mapper.ClientMapper;
@@ -99,17 +98,58 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
             ClientPreviewVO vo = client.asViewObject(ClientPreviewVO.class);
             BeanUtils.copyProperties(clientDetailMapper.selectById(vo.getId()), vo);
             RuntimeDetailVO runtime = currentRuntime.get(client.getId());
-            if(runtime != null && System.currentTimeMillis() - runtime.getTimestamp() < 60 * 1000) {
+            if(this.isOnline(runtime)) {
                 BeanUtils.copyProperties(runtime, vo);
                 vo.setOnline(true);
             }
             return vo;
         }).toList();
     }
+
+    @Override
+    public void renameClient(RenameClientVO vo) {
+        this.update(Wrappers.<Client>update().eq("id", vo.getId()).set("name", vo.getName()));
+        this.initClientCache();
+    }
+
+    @Override
+    public void renameNode(RenameNodeVO vo) {
+        this.update(Wrappers.<Client>update().eq("id", vo.getId())
+                .set("node", vo.getNode()).set("location", vo.getLocation()));
+        this.initClientCache();
+    }
+
+    @Override
+    public ClientDetailsVO clientDetails(int clientId) {
+        ClientDetailsVO vo = this.clientIdCache.get(clientId).asViewObject(ClientDetailsVO.class);
+        BeanUtils.copyProperties(clientDetailMapper.selectById(clientId), vo);
+        vo.setOnline(this.isOnline(currentRuntime.get(clientId)));
+        return vo;
+    }
+
+    @Override
+    public RuntimeHistoryVO clientRuntimeDetailsHistory(int clientId) {
+        RuntimeHistoryVO vo = influx.readRuntimeData(clientId);
+        ClientDetail detail = clientDetailMapper.selectById(clientId);
+        BeanUtils.copyProperties(detail, vo);
+        return vo;
+    }
+
+    @Override
+    public RuntimeDetailVO clientRuntimeDetailsNow(int clientId) {
+        return currentRuntime.get(clientId);
+    }
+
+
+    private boolean isOnline(RuntimeDetailVO runtime) {
+        return runtime != null && System.currentTimeMillis() - runtime.getTimestamp() < 60 * 1000;
+    }
+
     private void addClientCache(Client client){
         clientIdCache.put(client.getId(),client);
         clientTokenCache.put(client.getToken(),client);
     }
+
     /**
      * 生成一个随机的客户端ID。
      * 生成的ID范围是从10000000到99999999（包含边界值）。

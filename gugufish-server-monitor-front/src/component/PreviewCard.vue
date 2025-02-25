@@ -1,9 +1,13 @@
 <script setup>
-import {fitByUnit} from '@/tools'
+import {copyIp, fitByUnit, osNameToIcon, percentageToStatus, rename} from '@/tools'
+
 
 const props = defineProps({
-  data: Object
+  data: Object,
+  update: Function
 })
+
+
 </script>
 
 <template>
@@ -13,10 +17,13 @@ const props = defineProps({
         <div class="name">
           <span :class="`flag-icon flag-icon-${data.location}`"></span>
           <span style="margin: 0 5px">{{ data.name }}</span>
-          <i class="fa-solid fa-pen-to-square"></i>
+          <i class="fa-solid fa-pen-to-square interact-item" @click.stop="rename(data.id, data.name, update)"></i>
         </div>
         <div class="os">
-          操作系统: {{`${data.osName} ${data.osVersion}`}}
+          操作系统:
+          <i :style="{color: osNameToIcon(data.osName).color}"
+             :class="`fa-brands ${osNameToIcon(data.osName).icon}`"></i>
+          {{`${data.osName} ${data.osVersion}`}}
         </div>
       </div>
       <div class="status" v-if="data.online">
@@ -31,7 +38,7 @@ const props = defineProps({
     <el-divider style="margin: 10px 0"/>
     <div class="network">
       <span style="margin-right: 10px">公网IP: {{data.ip}}</span>
-      <i class="fa-solid fa-copy" style="color: dodgerblue"></i>
+      <i class="fa-solid fa-copy interact-item" @click.stop="copyIp(data.ip)" style="color: dodgerblue"></i>
     </div>
     <div class="cpu">
       <span style="margin-right: 10px">处理器: {{data.cpuName}}</span>
@@ -44,12 +51,12 @@ const props = defineProps({
     </div>
     <div class="progress">
       <span>{{`CPU: ${(data.cpuUsage * 100).toFixed(1)}%`}}</span>
-      <el-progress status="success"
+      <el-progress :status="percentageToStatus(data.cpuUsage * 100)"
                    :percentage="data.cpuUsage * 100" :stroke-width="5" :show-text="false"/>
     </div>
     <div class="progress">
       <span>内存: <b>{{data.memoryUsage.toFixed(1)}}</b> GB</span>
-      <el-progress status="success"
+      <el-progress :status="percentageToStatus(data.memoryUsage/data.memory * 100)"
                    :percentage="data.memoryUsage/data.memory * 100" :stroke-width="5" :show-text="false"/>
     </div>
     <div class="network-flow">
@@ -66,15 +73,19 @@ const props = defineProps({
 </template>
 
 <style scoped>
-:deep(.el-progress-bar__outer) {
-  background-color: #18cb1822;
-}
-
-:deep(.el-progress-bar__inner) {
-  background-color: #18cb18;
-}
 
 .dark .instance-card { color: #d9d9d9 }
+
+.interact-item {
+  transition: .3s;
+
+  &:hover {
+    cursor: pointer;
+    scale: 1.1;
+    opacity: 0.8;
+  }
+}
+
 
 .instance-card {
   width: 320px;
@@ -83,6 +94,13 @@ const props = defineProps({
   border-radius: 5px;
   box-sizing: border-box;
   color: #606060;
+
+  transition: .3s;
+
+  &:hover {
+    cursor: pointer;
+    scale: 1.02;
+  }
 
   .name {
     font-size: 15px;

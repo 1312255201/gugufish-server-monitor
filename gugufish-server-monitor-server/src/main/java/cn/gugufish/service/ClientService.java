@@ -1,8 +1,6 @@
 package cn.gugufish.service;
 
-import cn.gugufish.entity.vo.request.ClientDetailVO;
-import cn.gugufish.entity.vo.request.ClientPreviewVO;
-import cn.gugufish.entity.vo.request.RuntimeDetailVO;
+import cn.gugufish.entity.vo.request.*;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cn.gugufish.entity.dto.Client;
 
@@ -16,4 +14,9 @@ public interface ClientService extends IService<Client> {
     void updateClientDetail(ClientDetailVO vo,Client client);
     void updateRuntimeDetail(RuntimeDetailVO vo, Client client);
     List<ClientPreviewVO> listClients();
+    void renameClient(RenameClientVO vo);
+    void renameNode(RenameNodeVO vo);
+    ClientDetailsVO clientDetails(int clientId);
+    RuntimeHistoryVO clientRuntimeDetailsHistory(int clientId);
+    RuntimeDetailVO clientRuntimeDetailsNow(int clientId);
 }
