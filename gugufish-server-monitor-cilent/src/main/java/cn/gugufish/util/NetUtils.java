@@ -1,5 +1,6 @@
 package cn.gugufish.util;
 
+import cn.gugufish.entity.BaseDetail;
 import cn.gugufish.entity.ConnectionConfig;
 import cn.gugufish.entity.Response;
 import com.alibaba.fastjson2.JSONObject;
@@ -46,6 +47,29 @@ public class NetUtils {
         }
         catch (Exception e){
             log.error("在发起服务端请求的时候出现了问题",e);
+            return Response.errorResponse(e);
+        }
+    }
+    public void updateBaseDetails(BaseDetail detail) {
+        Response response = this.doPost("/detail", detail);
+        if(response.isSuccess()) {
+            log.info("系统基本信息已更新完成");
+        } else {
+            log.error("系统基本信息更新失败: {}", response.message());
+        }
+    }
+    private Response doPost(String url, Object data) {
+        try {
+            String rawData = JSONObject.from(data).toJSONString();
+            HttpRequest request = HttpRequest.newBuilder().POST(HttpRequest.BodyPublishers.ofString(rawData))
+                    .uri(new URI(connectionConfig.getAddress() + "/monitor" + url))
+                    .header("Authorization", connectionConfig.getToken())
+                    .header("Content-Type", "application/json")
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            return JSONObject.parseObject(response.body()).to(Response.class);
+        } catch (Exception e) {
+            log.error("在发起服务端请求时出现问题", e);
             return Response.errorResponse(e);
         }
     }

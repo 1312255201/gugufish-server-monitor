@@ -6,6 +6,8 @@ import cn.gugufish.util.NetUtils;
 import com.alibaba.fastjson2.JSONObject;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,7 +20,7 @@ import java.util.Scanner;
 
 @Slf4j
 @Configuration
-public class ServerConfiguration {
+public class ServerConfiguration implements ApplicationRunner {
 
     @Resource
     NetUtils netUtils;
@@ -34,6 +36,12 @@ public class ServerConfiguration {
             connectionConfig = this.registerToServer();
         }
         return connectionConfig;
+    }
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        log.info("正在向服务端更新基本信息");
+        netUtils.updateBaseDetails(monitorUtils.monitorBaseDetail());
     }
 
     private ConnectionConfig registerToServer() {
