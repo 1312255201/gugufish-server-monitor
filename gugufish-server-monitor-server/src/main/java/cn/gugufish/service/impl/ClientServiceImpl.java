@@ -2,6 +2,7 @@ package cn.gugufish.service.impl;
 
 import cn.gugufish.entity.dto.ClientDetail;
 import cn.gugufish.entity.vo.request.ClientDetailVO;
+import cn.gugufish.entity.vo.request.RuntimeDetailVO;
 import cn.gugufish.mapper.ClientDetailMapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -61,7 +62,7 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
                 id = this.randomClientId();
                 wrapper.eq("id", id);
             }
-            Client client = new Client(id,"未命名主机",token,new Date());
+            Client client = new Client(id,"未命名主机",token,"cn","未命名节点",new Date());
             if(this.save(client)){
                 registerToken = this.generateNewToken();
                 this.addClientCache(client);
@@ -81,6 +82,14 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
         }else{
             clientDetailMapper.insert(detail);
         }
+    }
+
+    private Map<Integer, RuntimeDetailVO> currentRuntime = new ConcurrentHashMap<>();
+
+    @Override
+    public void updateRuntimeDetail(RuntimeDetailVO vo, Client client) {
+        currentRuntime.put(client.getId(), vo);
+        System.out.println(vo);
     }
 
     private void addClientCache(Client client){

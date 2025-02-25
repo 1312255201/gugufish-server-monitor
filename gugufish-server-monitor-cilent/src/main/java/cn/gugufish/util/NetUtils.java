@@ -3,6 +3,7 @@ package cn.gugufish.util;
 import cn.gugufish.entity.BaseDetail;
 import cn.gugufish.entity.ConnectionConfig;
 import cn.gugufish.entity.Response;
+import cn.gugufish.entity.RuntimeDetail;
 import com.alibaba.fastjson2.JSONObject;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +59,13 @@ public class NetUtils {
             log.error("系统基本信息更新失败: {}", response.message());
         }
     }
+    public void updateRuntimeDetails(RuntimeDetail detail) {
+        Response response = this.doPost("/runtime", detail);
+        if(!response.isSuccess()) {
+            log.warn("更新运行时状态时，接收到服务端的异常响应内容: {}", response.message());
+        }
+    }
+
     private Response doPost(String url, Object data) {
         try {
             String rawData = JSONObject.from(data).toJSONString();

@@ -3,6 +3,7 @@ package cn.gugufish.controller;
 import cn.gugufish.entity.RestBean;
 import cn.gugufish.entity.dto.Client;
 import cn.gugufish.entity.vo.request.ClientDetailVO;
+import cn.gugufish.entity.vo.request.RuntimeDetailVO;
 import cn.gugufish.service.ClientService;
 import cn.gugufish.utils.Const;
 import jakarta.annotation.Resource;
@@ -25,6 +26,13 @@ public class ClientController {
     public RestBean<Void> updateClientDetails(@RequestAttribute(Const.ATTR_CLIENT) Client client,
                                               @RequestBody @Valid ClientDetailVO vo) {
         clientService.updateClientDetail(vo,client);
+        return RestBean.success();
+    }
+
+    @PostMapping("/runtime")
+    public RestBean<Void> updateRuntimeDetails(@RequestAttribute(Const.ATTR_CLIENT) Client client,
+                                               @RequestBody @Valid RuntimeDetailVO vo) {
+        clientService.updateRuntimeDetail(vo, client);
         return RestBean.success();
     }
 }
