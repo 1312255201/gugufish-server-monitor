@@ -50,6 +50,11 @@
 			<artifactId>fastjson2</artifactId>
 			<version>2.0.56</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.oshi</groupId>
+			<artifactId>oshi-core</artifactId>
+			<version>6.6.6</version>
+		</dependency>
 	</dependencies>
 
 	<build>

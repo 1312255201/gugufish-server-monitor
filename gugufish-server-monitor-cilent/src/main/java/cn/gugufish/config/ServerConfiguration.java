@@ -1,6 +1,7 @@
 package cn.gugufish.config;
 
 import cn.gugufish.entity.ConnectionConfig;
+import cn.gugufish.util.MonitorUtils;
 import cn.gugufish.util.NetUtils;
 import com.alibaba.fastjson2.JSONObject;
 import jakarta.annotation.Resource;
@@ -21,6 +22,9 @@ public class ServerConfiguration {
 
     @Resource
     NetUtils netUtils;
+
+    @Resource
+    MonitorUtils monitorUtils;
 
     @Bean
     ConnectionConfig connectionConfig(){
