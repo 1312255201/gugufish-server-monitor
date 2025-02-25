@@ -2,8 +2,10 @@ package cn.gugufish.service.impl;
 
 import cn.gugufish.entity.dto.ClientDetail;
 import cn.gugufish.entity.vo.request.ClientDetailVO;
+import cn.gugufish.entity.vo.request.ClientPreviewVO;
 import cn.gugufish.entity.vo.request.RuntimeDetailVO;
 import cn.gugufish.mapper.ClientDetailMapper;
+import cn.gugufish.utils.InfluxDbUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.gugufish.entity.dto.Client;
@@ -15,10 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.util.Date;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -31,6 +30,9 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
 
     @Resource
     ClientDetailMapper clientDetailMapper;
+
+    @Resource
+    InfluxDbUtils influx;
 
     @PostConstruct
     public void initClientCache(){
@@ -84,14 +86,26 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
         }
     }
 
-    private Map<Integer, RuntimeDetailVO> currentRuntime = new ConcurrentHashMap<>();
+    private final Map<Integer, RuntimeDetailVO> currentRuntime = new ConcurrentHashMap<>();
 
     @Override
     public void updateRuntimeDetail(RuntimeDetailVO vo, Client client) {
         currentRuntime.put(client.getId(), vo);
-        System.out.println(vo);
+        influx.writeRuntimeData(client.getId(), vo);
     }
-
+    @Override
+    public List<ClientPreviewVO> listClients() {
+        return clientIdCache.values().stream().map(client -> {
+            ClientPreviewVO vo = client.asViewObject(ClientPreviewVO.class);
+            BeanUtils.copyProperties(clientDetailMapper.selectById(vo.getId()), vo);
+            RuntimeDetailVO runtime = currentRuntime.get(client.getId());
+            if(runtime != null && System.currentTimeMillis() - runtime.getTimestamp() < 60 * 1000) {
+                BeanUtils.copyProperties(runtime, vo);
+                vo.setOnline(true);
+            }
+            return vo;
+        }).toList();
+    }
     private void addClientCache(Client client){
         clientIdCache.put(client.getId(),client);
         clientTokenCache.put(client.getToken(),client);

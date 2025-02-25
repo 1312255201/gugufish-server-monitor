@@ -1,9 +1,12 @@
 package cn.gugufish.service;
 
 import cn.gugufish.entity.vo.request.ClientDetailVO;
+import cn.gugufish.entity.vo.request.ClientPreviewVO;
 import cn.gugufish.entity.vo.request.RuntimeDetailVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cn.gugufish.entity.dto.Client;
+
+import java.util.List;
 
 public interface ClientService extends IService<Client> {
     String registerToken();
@@ -12,4 +15,5 @@ public interface ClientService extends IService<Client> {
     boolean verifyAndRegister(String token);
     void updateClientDetail(ClientDetailVO vo,Client client);
     void updateRuntimeDetail(RuntimeDetailVO vo, Client client);
+    List<ClientPreviewVO> listClients();
 }
