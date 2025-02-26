@@ -2,7 +2,7 @@
   <el-container class="main-container">
     <el-header class="main-header">
       <el-image style="height: 30px"
-                src="https://element-plus.org/images/element-plus-logo.svg"/>
+                src="/UI/logo.jpg"/>
       <div class="tabs">
         <tab-item v-for="item in tabs" :name="item.name"
                   :active="item.id === tab" @click="changePage(item)"/>
@@ -12,7 +12,7 @@
                    :inactive-action-icon="Sunny"/>
         <el-dropdown>
           <el-avatar class="avatar"
-                     src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
+                     src="/UI/avatar.jpg"/>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item @click="userLogout">
@@ -27,7 +27,9 @@
     <el-main class="main-content">
       <router-view v-slot="{ Component }">
         <transition name="el-fade-in-linear" mode="out-in">
-          <component :is="Component"/>
+          <keep-alive exclude="Security">
+            <component :is="Component"/>
+          </keep-alive>
         </transition>
       </router-view>
     </el-main>

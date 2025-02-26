@@ -5,13 +5,19 @@ import {post} from "@/net";
 function fitByUnit(value, unit) {
     const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
     let index = units.indexOf(unit)
-    while (((value < 1 && value !== 0) || value >= 1024) && (index >= 0 || index < units.length)) {
-        if(value >= 1024) {
+    while (((value < 1 && value !== 0) || value >= 1024) && (index >= 0 && index < units.length) && value >= 0) {
+        if(value >= 1024 && index < units.length - 1) {
             value = value / 1024
             index = index + 1
         } else {
-            value = value * 1024
-            index = index - 1
+            if(index > 0 && value < 1024)
+            {
+                value = value * 1024
+                index = index - 1
+            }
+            else{
+                break
+            }
         }
     }
     return `${parseInt(value)} ${units[index]}`

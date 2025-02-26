@@ -60,7 +60,7 @@ public class InfluxDbUtils {
         List<FluxTable> tables = client.getQueryApi().query(format, ORG);
         int size = tables.size();
         if (size == 0) return vo;
-        List<FluxRecord> records = tables.get(0).getRecords();
+        List<FluxRecord> records = tables.getFirst().getRecords();
         for (int i = 0; i < records.size(); i++) {
             JSONObject object = new JSONObject();
             object.put("timestamp", records.get(i).getTime());

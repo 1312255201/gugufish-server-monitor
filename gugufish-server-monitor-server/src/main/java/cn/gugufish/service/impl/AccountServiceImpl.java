@@ -1,5 +1,6 @@
 package cn.gugufish.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.gugufish.entity.dto.Account;
 import cn.gugufish.entity.vo.request.ConfirmResetVO;
@@ -114,6 +115,18 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         if(!code.equals(info.getCode())) return "验证码错误，请重新输入";
         return null;
     }
+
+    @Override
+    public boolean changePassword(int id, String oldPass, String newPass) {
+        Account account = this.getById(id);
+        String password = account.getPassword();
+        if(!passwordEncoder.matches(oldPass, password))
+            return false;
+        this.update(Wrappers.<Account>update().eq("id", id)
+                .set("password", passwordEncoder.encode(newPass)));
+        return true;
+    }
+
 
     /**
      * 移除Redis中存储的邮件验证码
