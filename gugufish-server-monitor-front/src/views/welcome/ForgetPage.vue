@@ -15,7 +15,7 @@
                 <div style="margin-top: 50px">
                     <el-form :model="form" :rules="rules" @validate="onValidate" ref="formRef">
                         <el-form-item prop="email">
-                            <el-input v-model="form.email" type="email" placeholder="电子邮件地址">
+                            <el-input v-model="form.email" type="email" placeholder="电子邮件地址" maxlength="50">
                                 <template #prefix>
                                     <el-icon><Message /></el-icon>
                                 </template>
@@ -106,7 +106,7 @@ const validatePassword = (rule, value, callback) => {
 const rules = {
     email: [
         { required: true, message: '请输入邮件地址', trigger: 'blur' },
-        {type: 'email', message: '请输入合法的电子邮件地址', trigger: ['blur', 'change']}
+        {type: 'email',max: 50, message: '请输入合法的电子邮件地址', trigger: ['blur', 'change']}
     ],
     code: [
         { required: true, message: '请输入获取的验证码', trigger: 'blur' },

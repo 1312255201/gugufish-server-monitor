@@ -79,7 +79,7 @@ const rules = {
   ],
   email: [
     { required: true, message: '请输入邮件地址', trigger: 'blur' },
-    {type: 'email', message: '请输入合法的电子邮件地址', trigger: ['blur', 'change']}
+    {type: 'email', max: 50, message: '请输入合法的电子邮件地址', trigger: ['blur', 'change']}
   ]
 }
 
