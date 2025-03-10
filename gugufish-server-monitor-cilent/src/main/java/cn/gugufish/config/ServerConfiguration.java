@@ -50,6 +50,9 @@ public class ServerConfiguration implements ApplicationRunner {
         do{
             System.out.println("请输入服务器地址 地址实例 'http://127.0.0.1:8080' :");
             address = scanner.nextLine();
+            //去掉最后的/防止输入bug导致链接失败
+            if(address.endsWith("/"))
+                address = address.substring(0, address.length()-1);
             log.info("请输入服务端生成的令牌:");
             token = scanner.nextLine();
         }while (!netUtils.registerToServer(address,token));

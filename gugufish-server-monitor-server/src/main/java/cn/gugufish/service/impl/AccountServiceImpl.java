@@ -1,5 +1,8 @@
 package cn.gugufish.service.impl;
 
+import cn.gugufish.entity.vo.request.CreateSubAccountVO;
+import cn.gugufish.entity.vo.request.SubAccountVO;
+import com.alibaba.fastjson2.JSONArray;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.gugufish.entity.dto.Account;
@@ -19,6 +22,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -126,7 +131,34 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
                 .set("password", passwordEncoder.encode(newPass)));
         return true;
     }
+    @Override
+    public void createSubAccount(CreateSubAccountVO vo) {
+        Account account = this.findAccountByNameOrEmail(vo.getEmail());
+        if(account != null)
+            throw new IllegalArgumentException("该电子邮件已被注册");
+        account = this.findAccountByNameOrEmail(vo.getUsername());
+        if(account != null)
+            throw new IllegalArgumentException("该用户名已被注册");
+        account = new Account(null, vo.getUsername(), passwordEncoder.encode(vo.getPassword()),
+                vo.getEmail(), Const.ROLE_NORMAL, new Date(), JSONArray.copyOf(vo.getClients()).toJSONString());
+        this.save(account);
+    }
 
+    @Override
+    public void deleteSubAccount(int uid) {
+        this.removeById(uid);
+
+    }
+
+    @Override
+    public List<SubAccountVO> listSubAccount() {
+        return this.list(Wrappers.<Account>query().eq("role", Const.ROLE_NORMAL))
+                .stream().map(account -> {
+                    SubAccountVO vo = account.asViewObject(SubAccountVO.class);
+                    vo.setClientList(JSONArray.parse(account.getClients()));
+                    return vo;
+                }).toList();
+    }
 
     /**
      * 移除Redis中存储的邮件验证码

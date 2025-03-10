@@ -2,15 +2,15 @@ package cn.gugufish.controller;
 
 import cn.gugufish.entity.RestBean;
 import cn.gugufish.entity.vo.request.ChangePasswordVO;
+import cn.gugufish.entity.vo.request.CreateSubAccountVO;
+import cn.gugufish.entity.vo.request.SubAccountVO;
 import cn.gugufish.service.AccountService;
 import cn.gugufish.utils.Const;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -26,4 +26,23 @@ public class UserController {
                 RestBean.success() : RestBean.failure(401, "原密码输入错误！");
     }
 
+    @PostMapping("/sub/create")
+    public RestBean<Void> createSubAccount(@RequestBody @Valid CreateSubAccountVO vo) {
+        service.createSubAccount(vo);
+        return RestBean.success();
+    }
+
+    @GetMapping("/sub/delete")
+    public RestBean<Void> deleteSubAccount(int uid,
+                                           @RequestAttribute(Const.ATTR_USER_ID) int userId) {
+        if(uid == userId)
+            return RestBean.failure(401, "非法参数");
+        service.deleteSubAccount(uid);
+        return RestBean.success();
+    }
+
+    @GetMapping("/sub/list")
+    public RestBean<List<SubAccountVO>> subAccountList() {
+        return RestBean.success(service.listSubAccount());
+    }
 }
