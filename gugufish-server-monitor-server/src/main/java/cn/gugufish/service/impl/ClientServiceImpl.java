@@ -107,7 +107,14 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
             return vo;
         }).toList();
     }
-
+    @Override
+    public List<ClientSimpleVO> listSimpleList() {
+        return clientIdCache.values().stream().map(client -> {
+            ClientSimpleVO vo = client.asViewObject(ClientSimpleVO.class);
+            BeanUtils.copyProperties(clientDetailMapper.selectById(vo.getId()), vo);
+            return vo;
+        }).toList();
+    }
     @Override
     public void renameClient(RenameClientVO vo) {
         this.update(Wrappers.<Client>update().eq("id", vo.getId()).set("name", vo.getName()));

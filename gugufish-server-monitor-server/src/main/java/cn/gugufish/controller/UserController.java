@@ -3,6 +3,7 @@ package cn.gugufish.controller;
 import cn.gugufish.entity.RestBean;
 import cn.gugufish.entity.vo.request.ChangePasswordVO;
 import cn.gugufish.entity.vo.request.CreateSubAccountVO;
+import cn.gugufish.entity.vo.request.ModifyEmailVO;
 import cn.gugufish.entity.vo.request.SubAccountVO;
 import cn.gugufish.service.AccountService;
 import cn.gugufish.utils.Const;
@@ -25,7 +26,16 @@ public class UserController {
         return service.changePassword(userId, vo.getPassword(), vo.getNew_password()) ?
                 RestBean.success() : RestBean.failure(401, "原密码输入错误！");
     }
-
+    @PostMapping("/modify-email")
+    public RestBean<Void> modifyEmail(@RequestAttribute(Const.ATTR_USER_ID) int id,
+                                      @RequestBody @Valid ModifyEmailVO vo) {
+        String result = service.modifyEmail(id, vo);
+        if(result == null) {
+            return RestBean.success();
+        } else {
+            return RestBean.failure(401, result);
+        }
+    }
     @PostMapping("/sub/create")
     public RestBean<Void> createSubAccount(@RequestBody @Valid CreateSubAccountVO vo) {
         service.createSubAccount(vo);

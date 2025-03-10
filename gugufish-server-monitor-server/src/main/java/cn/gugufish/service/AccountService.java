@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import cn.gugufish.entity.dto.Account;
 import cn.gugufish.entity.vo.request.ConfirmResetVO;
 import cn.gugufish.entity.vo.request.EmailResetVO;
+import cn.gugufish.entity.vo.request.ModifyEmailVO;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -19,4 +20,5 @@ public interface AccountService extends IService<Account>, UserDetailsService {
     void createSubAccount(CreateSubAccountVO vo);
     void deleteSubAccount(int uid);
     List<SubAccountVO> listSubAccount();
+    String modifyEmail(int id, ModifyEmailVO vo);
 }

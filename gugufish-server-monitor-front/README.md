@@ -27,3 +27,12 @@ npm run dev
 ```sh
 npm run build
 ```
+
+```部署问题
+用Nginx部署的时候会出现刷新404问题
+    location / {
+      try_files $uri $uri/ /index.html;
+    }
+添加如上配置即可
+Vue全部使用js跳转，添加的意思是不管访问啥都交给index.html处理
+```

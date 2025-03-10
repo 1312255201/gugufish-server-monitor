@@ -14,6 +14,7 @@ public interface ClientService extends IService<Client> {
     void updateClientDetail(ClientDetailVO vo,Client client);
     void updateRuntimeDetail(RuntimeDetailVO vo, Client client);
     List<ClientPreviewVO> listClients();
+    List<ClientSimpleVO> listSimpleList();
     void renameClient(RenameClientVO vo);
     void renameNode(RenameNodeVO vo);
     ClientDetailsVO clientDetails(int clientId);
