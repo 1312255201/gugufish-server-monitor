@@ -1,8 +1,11 @@
 package cn.gugufish.service.impl;
 
 import cn.gugufish.entity.dto.ClientDetail;
+import cn.gugufish.entity.dto.ClientSsh;
+import cn.gugufish.entity.vo.SshSettingsVO;
 import cn.gugufish.entity.vo.request.*;
 import cn.gugufish.mapper.ClientDetailMapper;
+import cn.gugufish.mapper.ClientSshMapper;
 import cn.gugufish.utils.InfluxDbUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -32,6 +35,9 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
 
     @Resource
     InfluxDbUtils influx;
+
+    @Resource
+    ClientSshMapper sshMapper;
 
     @PostConstruct
     public void initClientCache(){
@@ -157,6 +163,32 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
         currentRuntime.remove(clientId);
     }
 
+    @Override
+    public void saveClientSshConnection(SshConnectionVO vo) {
+        Client client = clientIdCache.get(vo.getId());
+        if(client == null) return;
+        ClientSsh ssh = new ClientSsh();
+        BeanUtils.copyProperties(vo, ssh);
+        if(Objects.nonNull(sshMapper.selectById(client.getId()))) {
+            sshMapper.updateById(ssh);
+        } else {
+            sshMapper.insert(ssh);
+        }
+    }
+
+    @Override
+    public SshSettingsVO sshSettings(int clientId) {
+        ClientDetail detail = clientDetailMapper.selectById(clientId);
+        ClientSsh ssh = sshMapper.selectById(clientId);
+        SshSettingsVO vo;
+        if(ssh == null) {
+            vo = new SshSettingsVO();
+        } else {
+            vo = ssh.asViewObject(SshSettingsVO.class);
+        }
+        vo.setIp(detail.getIp());
+        return vo;
+    }
 
     private boolean isOnline(RuntimeDetailVO runtime) {
         return runtime != null && System.currentTimeMillis() - runtime.getTimestamp() < 60 * 1000;

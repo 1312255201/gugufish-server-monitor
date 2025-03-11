@@ -4,7 +4,7 @@ import {get, post} from "@/net";
 import {copyIp, cpuNameToImage, fitByUnit, osNameToIcon, percentageToStatus, rename} from "@/tools";
 import {ElMessage,ElMessageBox} from "element-plus";
 import RuntimeHistory from "@/component/RuntimeHistory.vue";
-import {Delete} from "@element-plus/icons-vue";
+import {Connection, Delete} from "@element-plus/icons-vue";
 import {useStore} from "@/store";
 
 const store = useStore()
@@ -23,7 +23,7 @@ const props = defineProps({
   update: Function
 })
 
-const emits = defineEmits(['delete'])
+const emits = defineEmits(['delete', 'terminal'])
 
 const details = reactive({
   base: {},
@@ -103,8 +103,12 @@ watch(() => props.id, init, { immediate: true })
             <i class="fa-solid fa-server"></i>
             服务器信息
           </div>
-          <el-button v-if="store.isAdmin" :icon="Delete" type="danger"
-                     @click="deleteClient" plain text>删除此主机</el-button>
+          <div>
+            <el-button v-if="!details.base.osName.includes('Windows')" :icon="Connection" type="info"
+                       @click="emits('terminal', id)" plain text>SSH远程连接</el-button>
+            <el-button v-if="store.isAdmin" :icon="Delete" type="danger" style="margin-left: 0"
+                       @click="deleteClient" plain text>删除此主机</el-button>
+          </div>
         </div>
         <el-divider style="margin: 10px 0"/>
         <div class="details-list">

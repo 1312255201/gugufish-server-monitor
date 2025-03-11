@@ -1,5 +1,6 @@
 package cn.gugufish.service;
 
+import cn.gugufish.entity.vo.SshSettingsVO;
 import cn.gugufish.entity.vo.request.*;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cn.gugufish.entity.dto.Client;
@@ -21,4 +22,6 @@ public interface ClientService extends IService<Client> {
     RuntimeHistoryVO clientRuntimeDetailsHistory(int clientId);
     RuntimeDetailVO clientRuntimeDetailsNow(int clientId);
     void deleteClient(int clientId);
+    void saveClientSshConnection(SshConnectionVO vo);
+    SshSettingsVO sshSettings(int clientId);
 }

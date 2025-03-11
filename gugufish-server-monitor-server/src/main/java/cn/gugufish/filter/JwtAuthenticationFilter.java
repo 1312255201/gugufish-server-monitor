@@ -1,5 +1,7 @@
 package cn.gugufish.filter;
 
+import cn.gugufish.entity.dto.Account;
+import cn.gugufish.service.AccountService;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import cn.gugufish.entity.RestBean;
 import cn.gugufish.entity.dto.Client;
@@ -63,9 +65,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 request.setAttribute(Const.ATTR_USER_ID, utils.toId(jwt));
                 request.setAttribute(Const.ATTR_USER_ROLE, new ArrayList<>(user.getAuthorities()).getFirst().getAuthority());
+
+                if(request.getRequestURI().startsWith("/terminal/") && !accessShell(
+                        (int) request.getAttribute(Const.ATTR_USER_ID),
+                        (String) request.getAttribute(Const.ATTR_USER_ROLE),
+                        Integer.parseInt(request.getRequestURI().substring(10)))) {
+                    response.setStatus(401);
+                    response.setCharacterEncoding("utf-8");
+                    response.getWriter().write(RestBean.failure(401, "无权访问").asJsonString());
+                    return;
+                }
             }
         }
 
         filterChain.doFilter(request, response);
+    }
+    @Resource
+    AccountService accountService;
+
+    private boolean accessShell(int userId, String userRole, int clientId) {
+        if(Const.ROLE_ADMIN.equals(userRole.substring(5))) {
+            return true;
+        } else {
+            Account account = accountService.getById(userId);
+            return account.getClientList().contains(clientId);
+        }
     }
 }
