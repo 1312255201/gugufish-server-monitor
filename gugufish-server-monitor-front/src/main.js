@@ -12,6 +12,7 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 //axios.defaults.baseURL = 'http://localhost:8080'
 axios.defaults.baseURL = 'https://monitor.gugufish.cn'
 
+
 const app = createApp(App)
 
 const pinia = createPinia()
