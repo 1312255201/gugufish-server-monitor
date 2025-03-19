@@ -7,6 +7,7 @@ import cn.gugufish.entity.vo.request.*;
 import cn.gugufish.service.AccountService;
 import cn.gugufish.service.ClientService;
 import cn.gugufish.utils.Const;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class MonitorController {
     ClientService service;
     @Resource
     AccountService accountService;
-
+    @Operation(summary = "获取主机列表")
     @GetMapping("/list")
     public RestBean<List<ClientPreviewVO>> listAllClient(@RequestAttribute(Const.ATTR_USER_ID) int userId,
                                                          @RequestAttribute(Const.ATTR_USER_ROLE) String userRole) {
@@ -35,6 +36,7 @@ public class MonitorController {
                     .toList());
         }
     }
+    @Operation(summary = "获取主机简略信息")
     @GetMapping("/simple-list")
     public RestBean<List<ClientSimpleVO>> simpleClientList(@RequestAttribute(Const.ATTR_USER_ROLE) String userRole) {
         if(this.isAdminAccount(userRole)) {
@@ -43,6 +45,7 @@ public class MonitorController {
             return RestBean.noPermission();
         }
     }
+    @Operation(summary = "主机重命名")
     @PostMapping("/rename")
     public RestBean<Void> renameClient(@RequestBody @Valid RenameClientVO vo,
                                        @RequestAttribute(Const.ATTR_USER_ID) int userId,
@@ -54,6 +57,7 @@ public class MonitorController {
             return RestBean.noPermission();
         }
     }
+    @Operation(summary = "主机节点重命名")
     @PostMapping("/node")
     public RestBean<Void> renameNode(@RequestBody @Valid RenameNodeVO vo,
                                      @RequestAttribute(Const.ATTR_USER_ID) int userId,
@@ -65,6 +69,7 @@ public class MonitorController {
             return RestBean.noPermission();
         }
     }
+    @Operation(summary = "主机详细信息")
     @GetMapping("/details")
     public RestBean<ClientDetailsVO> details(int clientId,
                                              @RequestAttribute(Const.ATTR_USER_ID) int userId,
@@ -75,6 +80,7 @@ public class MonitorController {
             return RestBean.noPermission();
         }
     }
+    @Operation(summary = "主机运行历史记录")
     @GetMapping("/runtime-history")
     public RestBean<RuntimeHistoryVO> runtimeDetailsHistory(int clientId,
                                                             @RequestAttribute(Const.ATTR_USER_ID) int userId,
@@ -85,6 +91,7 @@ public class MonitorController {
             return RestBean.noPermission();
         }
     }
+    @Operation(summary = "主机当前时刻运行记录")
     @GetMapping("/runtime-now")
     public RestBean<RuntimeDetailVO> runtimeDetailsNow(int clientId,
                                                        @RequestAttribute(Const.ATTR_USER_ID) int userId,
@@ -95,6 +102,7 @@ public class MonitorController {
             return RestBean.noPermission();
         }
     }
+    @Operation(summary = "主机注册")
     @GetMapping("/register")
     public RestBean<String> registerToken(@RequestAttribute(Const.ATTR_USER_ROLE) String userRole) {
         if (this.isAdminAccount(userRole)) {
@@ -103,6 +111,7 @@ public class MonitorController {
             return RestBean.noPermission();
         }
     }
+    @Operation(summary = "主机删除")
     @GetMapping("/delete")
     public RestBean<String> deleteClient(int clientId,
                                          @RequestAttribute(Const.ATTR_USER_ROLE) String userRole) {
@@ -113,6 +122,7 @@ public class MonitorController {
             return RestBean.noPermission();
         }
     }
+    @Operation(summary = "ssh信息保存")
     @PostMapping("/ssh-save")
     public RestBean<Void> saveSshConnection(@RequestBody @Valid SshConnectionVO vo,
                                             @RequestAttribute(Const.ATTR_USER_ID) int userId,
@@ -124,7 +134,7 @@ public class MonitorController {
             return RestBean.noPermission();
         }
     }
-
+    @Operation(summary = "ssh信息获取")
     @GetMapping("/ssh")
     public RestBean<SshSettingsVO> sshSettings(int clientId,
                                                @RequestAttribute(Const.ATTR_USER_ID) int userId,
