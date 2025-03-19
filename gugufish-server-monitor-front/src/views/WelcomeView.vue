@@ -3,13 +3,13 @@
       <div class="singe-bg"></div>
       <el-container>
         <el-aside></el-aside>
-        <el-main class="login-elmain">
+        <el-main class="login-elmain" style="overflow: hidden">
           <el-container class="login-container">
             <el-header ></el-header>
             <el-container class="login-main">
-              <el-main>
-                <el-image style="width: 100%;height: 100%" fit="cover"
-                          src="/UI/img.png"/>
+              <el-main >
+                <el-image style="width: 100%;height: 100%;flex: 1" fit="cover"
+                          src="/UI/img.png" />
               </el-main>
               <el-aside width="400px">
                 <div class="right-card">
