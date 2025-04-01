@@ -1,8 +1,11 @@
 package cn.gugufish.util;
 
 import cn.gugufish.entity.BaseDetail;
+import cn.gugufish.entity.ConnectionConfig;
 import cn.gugufish.entity.RuntimeDetail;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
@@ -19,7 +22,9 @@ import java.util.*;
 @Slf4j
 @Component
 public class MonitorUtils {
-
+    @Lazy
+    @Resource
+    ConnectionConfig config;
     private final SystemInfo systemInfo = new SystemInfo();
     private final Properties properties = System.getProperties();
 
@@ -96,16 +101,25 @@ public class MonitorUtils {
         long totalCpu = cUser + nice + cSys + idle + ioWait + irq + softIrq + steal;
         return (cSys + cUser) * 1.0 / totalCpu;
     }
+    public List<String> listNetworkInterfaceName() {
+        HardwareAbstractionLayer hardware = systemInfo.getHardware();
+        return hardware.getNetworkIFs()
+                .stream()
+                .map(NetworkIF::getName)
+                .toList();
+    }
 
     private NetworkIF findNetworkInterface(HardwareAbstractionLayer hardware) {
         try{
-            for (NetworkIF networkIF : hardware.getNetworkIFs()) {
-                String[] ipv4Addr = networkIF.getIPv4addr();
-                NetworkInterface ni = networkIF.queryNetworkInterface();
-                if(!ni.isLoopback() && !ni.isPointToPoint() && ni.isUp() && !ni.isVirtual()
-                        && (ni.getName().startsWith("eth") || ni.getName().startsWith("en") || ni.getName().startsWith("wire")) && ipv4Addr.length > 0){
-                    return networkIF;
-                }
+            String target = config.getNetworkInterface();
+            List<NetworkIF> ifs = hardware.getNetworkIFs()
+                    .stream()
+                    .filter(inter -> inter.getName().equals(target))
+                    .toList();
+            if (!ifs.isEmpty()) {
+                return ifs.get(0);
+            } else {
+                throw new IOException("网卡信息错误，找不到网卡: " + target);
             }
         }
         catch (IOException e){
