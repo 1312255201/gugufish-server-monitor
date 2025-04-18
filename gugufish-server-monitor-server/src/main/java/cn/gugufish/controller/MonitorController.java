@@ -8,12 +8,16 @@ import cn.gugufish.service.AccountService;
 import cn.gugufish.service.ClientService;
 import cn.gugufish.utils.Const;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+/**
+ * 用于获取服务器信息，以及前端操作服务器的相关接口
+ */
+@Tag(name = "客户端相关", description = "包括客户机注册，详细信息储存，运行数据存储。")
 @RestController
 @RequestMapping("/api/monitor")
 public class MonitorController {
