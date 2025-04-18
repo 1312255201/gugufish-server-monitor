@@ -5,7 +5,6 @@
         <el-aside class="responsive-aside"></el-aside>
         <el-main class="login-elmain">
           <el-container class="login-container">
-            <el-header></el-header>
             <el-container class="login-main">
               <el-main class="image-container">
                 <el-image class="login-image" fit="cover"
@@ -13,7 +12,7 @@
               </el-main>
               <el-aside class="login-form-container">
                 <div class="right-card">
-                  <router-view v-slot="{ Component }">
+                  <router-view v-slot="{ Component }" style="margin-bottom: 20px">
                     <transition name="el-fade-in-linear" mode="out-in">
                       <component :is="Component" style="height: 100%"/>
                     </transition>
