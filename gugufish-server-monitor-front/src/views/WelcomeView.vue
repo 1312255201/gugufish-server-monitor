@@ -42,10 +42,6 @@
   margin: 0 auto;
 }
 
-.responsive-aside {
-  width: 5% !important;
-}
-
 .login-elmain {
   overflow: hidden;
   display: flex;
