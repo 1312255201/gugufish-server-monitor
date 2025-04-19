@@ -2,7 +2,6 @@
     <div style="width: 100vw;height: 100vh;overflow: hidden;display: flex">
       <div class="singe-bg"></div>
       <el-container class="main-container">
-        <el-aside class="responsive-aside"></el-aside>
         <el-main class="login-elmain">
           <el-container class="login-container">
             <el-container class="login-main">
@@ -23,7 +22,6 @@
             </el-container>
           </el-container>
         </el-main>
-        <el-aside></el-aside>
       </el-container>
         <div class="welcome-title">
             <div style="font-size: 30px;font-weight: bold">服务器监控后台</div>
