@@ -86,6 +86,17 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         }
     }
 
+    @Override
+    public String sendEmailInfo(String type, String email, String address) {
+        synchronized (address.intern()) {
+            if(!this.verifyLimit(address))
+                return "发送过于频繁";
+            Map<String, Object> data = Map.of("type",type,"email", email, "code", 0,"ip",address);
+            rabbitTemplate.convertAndSend(Const.MQ_MAIL, data);
+            return null;
+        }
+    }
+
     /**
      * 邮件验证码重置密码操作，需要检查验证码是否正确
      * @param info 重置基本信息
