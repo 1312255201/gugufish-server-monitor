@@ -44,7 +44,7 @@ public class SecurityConfiguration {
     AccountService service;
 
     /**
-     * 针对于 SpringSecurity 6 的新版配置方法
+     * SpringSecurity 6 过滤链配置
      * @param http 配置器
      * @return 自动构建的内置过滤器链
      * @throws Exception 可能的异常

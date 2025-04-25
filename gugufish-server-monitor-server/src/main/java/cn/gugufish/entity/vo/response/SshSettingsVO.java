@@ -1,4 +1,4 @@
-package cn.gugufish.entity.vo;
+package cn.gugufish.entity.vo.response;
 
 import lombok.Data;
 

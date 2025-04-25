@@ -11,7 +11,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
-
+   /**
+     * 密码加密器
+     * @return PasswordEncoder 用于加密的类
+     */
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
