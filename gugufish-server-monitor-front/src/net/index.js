@@ -63,9 +63,9 @@ function internalPost(url, data, headers, success, failure, error = defaultError
         if(data.code === 200) {
             success(data.data)
         } else if(data.code === 401) {
-            failure('登录状态已过期，请重新登录！')
+            failure(data.message || '登录状态已过期，请重新登录！', data.code, url)
             deleteAccessToken(true)
-        } else {
+        }else {
             failure(data.message, data.code, url)
         }
     }).catch(err => error(err))
@@ -76,9 +76,9 @@ function internalGet(url, headers, success, failure, error = defaultError){
         if(data.code === 200) {
             success(data.data)
         } else if(data.code === 401) {
-            failure('登录状态已过期，请重新登录！')
+            failure(data.message || '登录状态已过期，请重新登录！', data.code, url)
             deleteAccessToken(true)
-        } else {
+        }else {
             failure(data.message, data.code, url)
         }
     }).catch(err => error(err))
