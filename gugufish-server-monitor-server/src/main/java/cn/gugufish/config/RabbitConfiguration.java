@@ -19,7 +19,7 @@ public class RabbitConfiguration {
                 .durable("mail")
                 .build();
     }
-
+    //我也不知道为啥要加这个，但是不加就会报错，所以我就加了XD
     @Bean
     public MessageConverter jsonToMapMessageConverter() {
         DefaultClassMapper defaultClassMapper = new DefaultClassMapper();
