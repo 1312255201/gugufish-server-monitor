@@ -2,7 +2,7 @@ package cn.gugufish.controller;
 
 import cn.gugufish.entity.RestBean;
 import cn.gugufish.entity.dto.Account;
-import cn.gugufish.entity.vo.SshSettingsVO;
+import cn.gugufish.entity.vo.response.SshSettingsVO;
 import cn.gugufish.entity.vo.request.*;
 import cn.gugufish.service.AccountService;
 import cn.gugufish.service.ClientService;

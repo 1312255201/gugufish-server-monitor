@@ -2,7 +2,7 @@ package cn.gugufish.service.impl;
 
 import cn.gugufish.entity.dto.ClientDetail;
 import cn.gugufish.entity.dto.ClientSsh;
-import cn.gugufish.entity.vo.SshSettingsVO;
+import cn.gugufish.entity.vo.response.SshSettingsVO;
 import cn.gugufish.entity.vo.request.*;
 import cn.gugufish.mapper.ClientDetailMapper;
 import cn.gugufish.mapper.ClientSshMapper;
