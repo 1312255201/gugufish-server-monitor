@@ -106,7 +106,7 @@ public class MonitorController {
             return RestBean.noPermission();
         }
     }
-    @Operation(summary = "主机注册")
+    @Operation(summary = "主机注册Tocken获取")
     @GetMapping("/register")
     public RestBean<String> registerToken(@RequestAttribute(Const.ATTR_USER_ROLE) String userRole) {
         if (this.isAdminAccount(userRole)) {

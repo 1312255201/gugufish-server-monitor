@@ -4,10 +4,16 @@ springdoc:
   swagger-ui:
     operations-sorter: alpha
 spring:
+  influx:
+    url: http://154.222.18.165:8086
+    user: 1312255201
+    password: wangyunhao000
   mail:
     host: smtp.qq.com
-    username: 114514@qq.com
-    password: qwq
+    username: 1312255201@qq.com
+    password: xjaydxkmrbagbacj
+    ssl:
+      enabled: true
   rabbitmq:
     addresses: localhost
     username: guest
@@ -33,7 +39,7 @@ spring:
       mail-limit: 60
     flow:
       period: 3
-      limit: 50
+      limit: 100
       block: 30
     cors:
       origin: '*'

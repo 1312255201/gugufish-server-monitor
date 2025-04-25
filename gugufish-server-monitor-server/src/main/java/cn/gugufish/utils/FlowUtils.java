@@ -64,23 +64,34 @@ public class FlowUtils {
     }
 
     /**
-     * 内部使用请求限制主要逻辑
-     * @param key 计数键
-     * @param frequency 请求频率
-     * @param period 计数周期
-     * @param action 限制行为与策略
-     * @return 是否通过限流检查
+     * 内部使用的限流检查核心方法
+     * 该方法实现了基于Redis的计数器限流算法，支持多种限流策略
+     * 
+     * @param key 在Redis中用于计数的键名，包含用户标识（如IP地址）
+     * @param frequency 允许的最大请求频率/次数
+     * @param period 计数周期，单位为秒，在该周期内累计请求次数
+     * @param action 限流策略回调接口，根据是否超出频率限制执行不同操作
+     * @return 是否通过限流检查，true表示允许请求，false表示请求被限制
      */
     private boolean internalCheck(String key, int frequency, int period, LimitAction action){
+        // 从Redis中获取当前计数值
         String count = template.opsForValue().get(key);
         if (count != null) {
+            // 键已存在，表示不是首次请求，将计数器值加1
+            // 使用increment原子操作确保并发安全，如果操作失败则返回0
             long value = Optional.ofNullable(template.opsForValue().increment(key)).orElse(0L);
             int c = Integer.parseInt(count);
+            // 如果返回值不等于预期值(c+1)，说明可能发生了异常情况
+            // 重新设置过期时间，确保计数器会在period秒后过期
             if(value != c + 1)
                 template.expire(key, period, TimeUnit.SECONDS);
+            // 调用限流策略接口，根据是否超出频率限制执行对应操作
+            // 将value > frequency作为参数传入，表示是否超出限制
             return action.run(value > frequency);
         } else {
+            // 键不存在，表示是首次请求，设置初始计数为1，并设置过期时间
             template.opsForValue().set(key, "1", period, TimeUnit.SECONDS);
+            // 首次请求默认通过限流检查
             return true;
         }
     }
