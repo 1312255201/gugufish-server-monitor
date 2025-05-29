@@ -154,5 +154,6 @@ const terminal = reactive({
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 </style>
