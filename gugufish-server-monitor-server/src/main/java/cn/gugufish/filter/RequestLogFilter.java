@@ -1,5 +1,6 @@
 package cn.gugufish.filter;
 
+import cn.gugufish.utils.IpUtils;
 import com.alibaba.fastjson2.JSONObject;
 import cn.gugufish.utils.Const;
 import cn.gugufish.utils.SnowflakeIdGenerator;
@@ -83,11 +84,11 @@ public class RequestLogFilter extends OncePerRequestFilter {
         if(id != null) {
             User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             log.info("请求URL: \"{}\" ({}) | 远程IP地址: {} │ 身份: {} (UID: {}) | 角色: {} | 请求参数列表: {}",
-                    request.getServletPath(), request.getMethod(), request.getRemoteAddr(),
+                    request.getServletPath(), request.getMethod(), IpUtils.getRealClientIp(request),
                     user.getUsername(), id, user.getAuthorities(), object);
         } else {
             log.info("请求URL: \"{}\" ({}) | 远程IP地址: {} │ 身份: 未验证 | 请求参数列表: {}",
-                    request.getServletPath(), request.getMethod(), request.getRemoteAddr(), object);
+                    request.getServletPath(), request.getMethod(), IpUtils.getRealClientIp(request), object);
         }
     }
 }

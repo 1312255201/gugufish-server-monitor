@@ -41,6 +41,7 @@ public class MailQueueListener {
 
             String email = data.get("email").toString();
             Integer code = data.containsKey("code") ? (Integer) data.get("code") : null;
+            String ip = data.containsKey("ip") ? (String) data.get("ip") : null;
 
             SimpleMailMessage message = switch (data.get("type").toString()) {
                 case "reset" ->
@@ -53,10 +54,12 @@ public class MailQueueListener {
                                 email);
                 case "logininfo" ->
                         createMessage("登录提示，你的监控系统账户被登录",
+                                    "你的账户被登录，登录远程IP为" + ip+
                                 "如非本人操作，请注意你的账户安全",
                                 email);
                 case "loginwarn" ->
                         createMessage("登录提示，你的监控系统账户可能遭受暴力破解",
+                                "你的账户被多次尝试登录，登录远程IP为" + ip+
                                 "如非本人操作，请注意你的账户安全,你的账号多次被尝试登录",
                                 email);
                 default -> null;

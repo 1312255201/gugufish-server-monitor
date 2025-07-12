@@ -7,6 +7,7 @@ import cn.gugufish.filter.JwtAuthenticationFilter;
 import cn.gugufish.filter.RequestLogFilter;
 import cn.gugufish.service.AccountService;
 import cn.gugufish.utils.Const;
+import cn.gugufish.utils.IpUtils;
 import cn.gugufish.utils.JwtUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -109,12 +110,12 @@ public class SecurityConfiguration {
             String jwt = utils.createJwt(user, account.getUsername(), account.getId());
             if(jwt == null) {
                 writer.write(RestBean.forbidden("登录验证频繁，请稍后再试").asJsonString());
-                service.sendEmailInfo("loginwarn",account.getEmail(),request.getRemoteAddr());
+                service.sendEmailInfo("loginwarn",account.getEmail(),IpUtils.getRealClientIp(request));
             } else {
                 AuthorizeVO vo = account.asViewObject(AuthorizeVO.class, o -> o.setToken(jwt));
                 vo.setExpire(utils.expireTime());
                 writer.write(RestBean.success(vo).asJsonString());
-                service.sendEmailInfo("logininfo",account.getEmail(),request.getRemoteAddr());
+                service.sendEmailInfo("logininfo",account.getEmail(), IpUtils.getRealClientIp(request));
             }
         }
     }

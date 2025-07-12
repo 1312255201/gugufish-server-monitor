@@ -3,6 +3,7 @@ package cn.gugufish.filter;
 import cn.gugufish.entity.RestBean;
 import cn.gugufish.utils.Const;
 import cn.gugufish.utils.FlowUtils;
+import cn.gugufish.utils.IpUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -44,7 +45,7 @@ public class FlowLimitingFilter extends HttpFilter {
 
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String address = request.getRemoteAddr();
+        String address = IpUtils.getRealClientIp(request);
         if ("OPTIONS".equals(request.getMethod()) && !tryCount(address))
             this.writeBlockMessage(response);
         else

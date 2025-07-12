@@ -4,6 +4,7 @@ import cn.gugufish.entity.RestBean;
 import cn.gugufish.entity.vo.request.ConfirmResetVO;
 import cn.gugufish.entity.vo.request.EmailResetVO;
 import cn.gugufish.service.AccountService;
+import cn.gugufish.utils.IpUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -41,7 +42,7 @@ public class AuthorizeController {
                                         @RequestParam @Pattern(regexp = "(reset|modify)")  String type,
                                         HttpServletRequest request){
         return this.messageHandle(() ->
-                accountService.registerEmailVerifyCode(type, String.valueOf(email), request.getRemoteAddr()));
+                accountService.registerEmailVerifyCode(type, String.valueOf(email), IpUtils.getRealClientIp(request)));
     }
 
     /**
